@@ -13,6 +13,11 @@ app.get('/', (req: Request, res: Response) => {
     })
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`)
-})
+// Avoid errors caused by importing in tests
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is listening on port ${PORT}`)
+    })
+}
+
+export default app;

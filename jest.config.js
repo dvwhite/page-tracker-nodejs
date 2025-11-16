@@ -4,8 +4,5 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.test.ts'],
   collectCoverageFrom: ['src/**/*.ts'],
   coveragePathIgnorePatterns: ['/node_modules/'],
-  moduleNameMapper: {
-    '^p-limit$': '<rootDir>/__mocks__/p-limit.js',
-  },
 };
 
