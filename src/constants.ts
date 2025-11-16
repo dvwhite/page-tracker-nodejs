@@ -1,0 +1,1 @@
+export const CONCURRENCY: string =  process.env.CONCURRENCY || '3';

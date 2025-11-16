@@ -1,14 +1,16 @@
 import { Request, Response } from 'express';
+import { getPageData } from '../services/pageService';
+import { CONCURRENCY } from '../constants';
 
-interface PageData {
+export interface PageData {
     title: string;
-    description: string;
+    description: string | null;
     screenshot?: string; // Base64 encoded image string
 }
 
 interface GetPagesRequest {
     urls: string[];
-    take_screenshots: boolean;
+    takeScreenshots: boolean;
 }
 
 interface GetPagesResponse {
@@ -22,11 +24,12 @@ interface ErrorResponse {
     message: string;
 }
 
-export const getPages = (req: Request<{}, {}, GetPagesRequest>, res: Response<GetPagesResponse|ErrorResponse>) => {
+export async function getPages (req: Request<{}, {}, GetPagesRequest>, res: Response<GetPagesResponse|ErrorResponse>) {
+    const { urls, takeScreenshots } = req.body;
+    const concurrency = parseInt(CONCURRENCY);
+
     try {
-        const pages: PageData[] = [
-            { title: "Example Title", "description": "Example Description", "screenshot": "b64encodedstring" }
-        ];
+        const pages: PageData[] = await getPageData(urls, takeScreenshots, concurrency);
 
         const pagesPayload: GetPagesResponse = {
             status: "Success",
