@@ -1,1 +1,1 @@
-export const CONCURRENCY: string =  process.env.CONCURRENCY || '3';
+export const MAX_CONCURRENCY: string =  process.env.MAX_CONCURRENCY || '3';

@@ -2,10 +2,10 @@ import pLimit from "p-limit";
 import { chromium, Page } from "playwright";
 import { PageData } from "../controllers/pageController"
 
-export async function getPageData(urls: string[], takeScreenshots: boolean, concurrencyLimit: number): Promise<PageData[]> {
+export async function getPageData(urls: string[], takeScreenshots: boolean, maxConcurrency: number): Promise<PageData[]> {
 
     // Guard against overloading resources by enforcing max concurrency
-    const limit = pLimit(concurrencyLimit);
+    const limit = pLimit(maxConcurrency);
     
     const browser = await chromium.launch();
     const context = await browser.newContext();
@@ -14,22 +14,38 @@ export async function getPageData(urls: string[], takeScreenshots: boolean, conc
         limit(async () => {
             // Navigate to the url
             const page = await context.newPage();
-            await page.goto(url);
+
+            try {
+                await page.goto(url, {timeout: 15000});
+            } catch (error) {
+                console.log('Error')
+                return {
+                    status: "Error",
+                    message: (error instanceof Error) ? error.message : "Timed out while waiting for the page",
+                    title: null,
+                    description: null,
+                    screenshot: null,
+                    url,
+                }
+            }
 
             // Get page data using Playwright
             const title = await page.title();
-            const metaDescription = await getLocatorText(page, 'meta[name="description"]', 5);
-            let screenshot: string = "";
+            const metaDescription = await getLocatorText(page, 'meta[name="description"]', 5000);
+            let screenshot: string | null = null;
             if (takeScreenshots) {
-                const buffer = await page.screenshot({fullPage: true});
+                const buffer = await page.screenshot();
                 screenshot = buffer.toString("base64");
             }
             await page.close();
 
             return {
+                status: "Success",
+                message: "Successfully retrieved the page data",
                 title,
                 description: metaDescription,
                 screenshot,
+                url,
             } 
         })
     );
@@ -42,15 +58,19 @@ export async function getPageData(urls: string[], takeScreenshots: boolean, conc
     return results
 }
 
-async function getLocatorText(page: Page, locator: string, timeout: number): Promise<string | null> {
+async function getLocatorText(page: Page, selector: string, timeout: number): Promise<string | null> {
     let text: string | null = null;
     
     try {
-        text = await page.locator(locator).textContent({
-            timeout: timeout,
+        const metaDescriptionLocator = page.locator(selector);
+        await metaDescriptionLocator.waitFor({ state: 'attached' });
+        text = await metaDescriptionLocator.getAttribute("content", {
+            timeout,
         });
     } catch (error) {
-        console.log('Timeout!');
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
     }
 
     return text;
