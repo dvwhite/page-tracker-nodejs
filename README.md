@@ -2,7 +2,7 @@
 
 A lightweight Node.js API to track webpage information using Node, Express, and Playwright. This service allows you to fetch page metadata (title, description), and screenshots from multiple webpages concurrently.
 
-## Preqrequisites
+## Prerequisites
 
 - Node.js (v14 or higher)
 - npm
@@ -27,7 +27,7 @@ npm install
 npx playwright install
 ```
 
-This step downloads the required browser binares that Playwright uses to interact with webpages.
+This step downloads the required browser binaries that Playwright uses to interact with webpages.
 
 4. **Build the project**
 
