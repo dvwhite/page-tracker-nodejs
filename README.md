@@ -155,8 +155,21 @@ Fetch metadata and optionally take screenshots of multiple webpages.
 }
 ```
 
-## Next Steps
+## Next Steps - Features and Enhancements
 
-- More tests
-- Expanded edge case handling
-- API validation (e.g., excessive number of urls)
+- Add API request body validation (e.g., excessive number of urls, no urls, malformed urls, url repetition)
+- Add more comprehensive tests
+- Expand edge case handling
+- Expand overall statuses (e.g., partial success)
+- Expand request statuses (e.g., webpage unavailable)
+- Add configuration options (e.g., timeout per url)
+- Add batching / API contract specifying max urls per request
+- Perform load testing to tune concurrency parameters
+- Add a Dockerfile and scripts to run in a container
+
+## Assumptions
+
+- 15 seconds is the maximum acceptable timeout per url (for better user experience)
+- Base64 encoded images are preferable over binary data for screenshots in response data (they're a little easier to work with in json-encoded string)
+- Concurrent browser pages are helpful in reducing latency when there are multiple urls to scrape
+- Clients sending requests to `/track-pages` would also like tracking metadata for each url, like `url`, `status` and `message`, to assist with matching urls from the request body to results in the response data, and understanding outcomes
