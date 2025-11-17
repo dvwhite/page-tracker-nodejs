@@ -91,6 +91,25 @@ Fetch metadata and optionally take screenshots of multiple webpages.
 | `urls` | `string[]` | Yes | Array of URLs to track |
 | `takeScreenshots` | `boolean` | Yes | Whether to take screenshots of the webpage at url |
 
+#### Response Body
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | `string` | Overall request status (`"Success"` or `"Error"`) |
+| `data` | `object[]` | Array of page data objects |
+| `validation` | `string[]` | Array of validation messages |
+
+**Page Data Objects** (contained in `data` array):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | `string` | Request status for each url (`"Success"` or `"Error"`) |
+| `message` | `string` | Success or error message for the url |
+| `title` | `string \| null` | The page title, or `null` if unavailable |
+| `description` | `string \| null` | The page meta description, or `null` if unavailable |
+| `screenshot` | `string \| null` | Base64 encoded screenshot, or `null` if `takeScreenshots` is `false` or request failed |
+| `url` | `string` | The URL for each page request |
+
 #### Success Response (200 OK)
 
 ```json
