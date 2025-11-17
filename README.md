@@ -110,6 +110,15 @@ Fetch metadata and optionally take screenshots of multiple webpages.
 | `screenshot` | `string \| null` | Base64 encoded screenshot, or `null` if `takeScreenshots` is `false` or request failed |
 | `url` | `string` | The URL for each page request |
 
+#### Example Request
+
+```json
+{
+    "urls": ["https://github.com", "https://example.com"],
+    "takeScreenshots": true
+}
+```
+
 #### Success Response (200 OK)
 
 ```json
